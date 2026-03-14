@@ -136,6 +136,11 @@ OpenCode now supports full model profile management via:
 
 These commands manage `.planning/config.json` and generate `opencode.json` with agent-to-model mappings. Note: Quit and relaunch OpenCode after changing profiles for changes to take effect.
 
+Current OpenAI defaults in this fork:
+- `quality` -> `openai/gpt-5.4`
+- `balanced` -> `openai/gpt-5.3-codex-spark`
+- `budget` -> `openai/gpt-5.3-codex-spark`
+
 ## Version 1.6.0 - We started using git submodules
 
 If you clone this repo dont forget to execute the next command after cloning:
@@ -200,6 +205,8 @@ gsd-opencode install
 ```
 
 That's it. Verify with `/gsd-help`.
+
+The installer also seeds `opencode.json` with GSD agent defaults and GSD config-folder read permission. By default it uses `openai/gpt-5.3-codex-spark` for installed GSD agents until you switch profiles.
 
 ### Staying Updated
 

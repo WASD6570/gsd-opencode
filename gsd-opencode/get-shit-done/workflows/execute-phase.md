@@ -20,7 +20,7 @@ INIT=$(node "$HOME/.config/opencode/get-shit-done/bin/gsd-tools.cjs" init execut
 if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 ```
 
-Parse JSON for: `executor_model`, `verifier_model`, `commit_docs`, `parallelization`, `branching_strategy`, `branch_name`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `plans`, `incomplete_plans`, `plan_count`, `incomplete_count`, `state_exists`, `roadmap_exists`, `phase_req_ids`.
+Parse JSON for: `executor_model`, `verifier_model`, `code_reviewer_model`, `security_reviewer_model`, `commit_docs`, `parallelization`, `branching_strategy`, `branch_name`, `phase_found`, `phase_dir`, `phase_number`, `phase_name`, `phase_slug`, `plans`, `incomplete_plans`, `plan_count`, `incomplete_count`, `state_exists`, `roadmap_exists`, `phase_req_ids`.
 
 **If `phase_found` is false:** Error — phase directory not found.
 **If `plan_count` is 0:** Error — no plans found in phase.
@@ -171,15 +171,66 @@ Execute each wave in sequence. Within a wave: parallel if `PARALLELIZATION=true`
    - Bad: "Wave 2 complete. Proceeding to Wave 3."
    - Good: "Terrain system complete — 3 biome types, height-based texturing, physics collision meshes. Vehicle physics (Wave 3) can now reference ground surfaces."
 
-5. **Handle failures:**
+ 5. **Post-plan code review:**
 
-   **Known OpenCode bug (classifyHandoffIfNeeded):** If an agent reports "failed" with error containing `classifyHandoffIfNeeded is not defined`, this is a OpenCode runtime bug — not a GSD or agent issue. The error fires in the completion handler AFTER all tool calls finish. In this case: run the same spot-checks as step 4 (SUMMARY.md exists, git commits present, no Self-Check: FAILED). If spot-checks PASS → treat as **successful**. If spot-checks FAIL → treat as real failure below.
+    After each plan completes successfully, detect changed file types and spawn the appropriate reviewer(s) in parallel.
 
-   For real failures: report which plan failed → ask "Continue?" or "Stop?" → if continue, dependent plans may also fail. If stop, partial completion report.
+    ```bash
+    # Get files changed by this plan's commits
+    CHANGED=$(git diff --name-only HEAD~$(git log --oneline --grep="{phase}-{plan}" | wc -l)..HEAD 2>/dev/null)
+    ```
 
-6. **Execute checkpoint plans between waves** — see `<checkpoint_handling>`.
+    **Reviewer selection by file type:**
+    | Files detected | Reviewer agent |
+    |----------------|---------------|
+    | `*.py` | gsd-python-reviewer |
+    | `*.go` | gsd-go-reviewer |
+    | `*.sql`, `*migration*`, `*schema*` | gsd-database-reviewer |
+    | Any code files | gsd-code-reviewer |
+    | Auth/input/API/security-related | gsd-security-reviewer |
 
-7. **Proceed to next wave.**
+    Always spawn `gsd-code-reviewer`. Add language-specific and security reviewers when relevant files are detected.
+
+    ```
+    task(
+      subagent_type="gsd-code-reviewer",
+      model="{code_reviewer_model}",
+      run_in_background=true,
+      description="Review {plan_id} code",
+      prompt="Review the code changes from plan {plan_id} in phase {phase_number}.
+      Run `git log --oneline --grep='{phase}-{plan}'` to find commits, then `git diff` to review changes.
+      Focus on the diff only — do not review pre-existing code.
+      Return a summary: approve, warn, or block with issues found."
+    )
+    ```
+
+    Spawn language-specific reviewers (`gsd-python-reviewer`, `gsd-go-reviewer`, `gsd-database-reviewer`) with the same pattern when matching files are detected.
+
+    Spawn `gsd-security-reviewer` when changes touch auth, API endpoints, user input handling, or sensitive data paths:
+    ```
+    task(
+      subagent_type="gsd-security-reviewer",
+      model="{security_reviewer_model}",
+      run_in_background=true,
+      description="Security review {plan_id}",
+      prompt="Security review the code changes from plan {plan_id} in phase {phase_number}.
+      Run `git log --oneline --grep='{phase}-{plan}'` to find commits, then `git diff` to review changes.
+      Focus on the diff only. Return: approve, warn, or block with vulnerabilities found."
+    )
+    ```
+
+    **If any reviewer returns BLOCK:** Report blocking issues to user, ask whether to fix now or defer.
+    **If WARN or APPROVE:** Log review status in wave completion report and continue.
+
+ 6. **Handle failures (execution or review):**
+
+    **Known OpenCode bug (classifyHandoffIfNeeded):** If an agent reports "failed" with error containing `classifyHandoffIfNeeded is not defined`, this is an OpenCode runtime bug — not a GSD or agent issue. The error fires in the completion handler AFTER all tool calls finish. In this case: run the same spot-checks as step 4 (SUMMARY.md exists, git commits present, no Self-Check: FAILED). If spot-checks PASS → treat as **successful**. If spot-checks FAIL → treat as real failure below.
+
+    For real failures: report which plan failed → ask "Continue?" or "Stop?" → if continue, dependent plans may also fail. If stop, partial completion report.
+
+ 7. **Execute checkpoint plans between waves** — see `<checkpoint_handling>`.
+
+ 8. **Proceed to next wave.**
 </step>
 
 <step name="checkpoint_handling">

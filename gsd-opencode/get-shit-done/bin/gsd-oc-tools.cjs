@@ -63,7 +63,7 @@ Examples:
   node gsd-oc-tools.cjs check-opencode-json
   node gsd-oc-tools.cjs check-config-json
   node gsd-oc-tools.cjs update-opencode-json --dry-run
-  node gsd-oc-tools.cjs validate-models opencode/glm-4.7
+  node gsd-oc-tools.cjs validate-models openai/gpt-5.3-codex-spark
   node gsd-oc-tools.cjs set-profile genius
   node gsd-oc-tools.cjs get-profile
   node gsd-oc-tools.cjs get-profile genius

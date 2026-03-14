@@ -79,7 +79,7 @@ Handle config state:
 **Check for migration:**
 
 ```bash
-node gsd-opencode/get-shit-done/bin/gsd-tools.cjs set-profile --migrate --raw 2>/dev/null
+node /home/wasd/.config/opencode/get-shit-done/bin/gsd-tools.cjs set-profile --migrate --raw 2>/dev/null
 ```
 
 If migration occurred, print:
@@ -167,7 +167,7 @@ If Cancel, return to menu.
 **Check for model reuse:**
 
 ```bash
-node gsd-opencode/get-shit-done/bin/gsd-tools.cjs profile-switch {new_type} --reuse --raw
+node /home/wasd/.config/opencode/get-shit-done/bin/gsd-tools.cjs profile-switch {new_type} --reuse --raw
 ```
 
 If can reuse models:
@@ -195,7 +195,7 @@ Call `/gsd-set-profile {new_type}` to run the wizard, then return to menu.
 Run model selection for current profile type:
 
 ```bash
-node gsd-opencode/get-shit-done/bin/gsd-tools.cjs set-profile {current_type} --wizard --raw
+node /home/wasd/.config/opencode/get-shit-done/bin/gsd-tools.cjs set-profile {current_type} --wizard --raw
 ```
 
 Follow the wizard prompts, then return to menu.
@@ -261,7 +261,7 @@ After any change, update both files:
 2. Generate and write `opencode.json`:
 
 ```bash
-node gsd-opencode/get-shit-done/bin/gsd-tools.cjs derive-opencode-json --raw
+node /home/wasd/.config/opencode/get-shit-done/bin/gsd-tools.cjs derive-opencode-json --raw
 ```
 
 Merge agent mappings into existing opencode.json (preserve other keys).

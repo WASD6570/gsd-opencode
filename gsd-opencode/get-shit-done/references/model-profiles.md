@@ -6,35 +6,36 @@ Model profiles control which OpenCode model each GSD agent uses. This allows bal
 
 | Agent | `quality` | `balanced` | `budget` |
 |-------|-----------|------------|----------|
-| gsd-planner | opus | opus | sonnet |
-| gsd-roadmapper | opus | sonnet | sonnet |
-| gsd-executor | opus | sonnet | sonnet |
-| gsd-phase-researcher | opus | sonnet | haiku |
-| gsd-project-researcher | opus | sonnet | haiku |
-| gsd-research-synthesizer | sonnet | sonnet | haiku |
-| gsd-debugger | opus | sonnet | sonnet |
-| gsd-codebase-mapper | sonnet | haiku | haiku |
-| gsd-verifier | sonnet | sonnet | haiku |
-| gsd-plan-checker | sonnet | sonnet | haiku |
-| gsd-integration-checker | sonnet | sonnet | haiku |
-| gsd-nyquist-auditor | sonnet | sonnet | haiku |
+| gsd-planner | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-roadmapper | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-executor | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-phase-researcher | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-project-researcher | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-research-synthesizer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-debugger | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-codebase-mapper | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-verifier | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-plan-checker | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-integration-checker | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-nyquist-auditor | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-code-reviewer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-database-reviewer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-go-reviewer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-python-reviewer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
+| gsd-security-reviewer | openai/gpt-5.4 | openai/gpt-5.3-codex-spark | openai/gpt-5.3-codex-spark |
 
 ## Profile Philosophy
 
 **quality** - Maximum reasoning power
-- Opus for all decision-making agents
-- Sonnet for read-only verification
+- `openai/gpt-5.4` for all GSD agents
 - Use when: quota available, critical architecture work
 
 **balanced** (default) - Smart allocation
-- Opus only for planning (where architecture decisions happen)
-- Sonnet for execution and research (follows explicit instructions)
-- Sonnet for verification (needs reasoning, not just pattern matching)
+- `openai/gpt-5.3-codex-spark` for all GSD agents
 - Use when: normal development, good balance of quality and cost
 
-**budget** - Minimal Opus usage
-- Sonnet for anything that writes code
-- Haiku for research and verification
+**budget** - Cost-aware, same family, lower tier
+- `openai/gpt-5.3-codex-spark` for all GSD agents
 - Use when: conserving quota, high-volume work, less critical phases
 
 ## Resolution Logic
@@ -56,13 +57,13 @@ Override specific agents without changing the entire profile:
 {
   "model_profile": "balanced",
   "model_overrides": {
-    "gsd-executor": "opus",
-    "gsd-planner": "haiku"
+    "gsd-executor": "openai/gpt-5.4",
+    "gsd-planner": "openai/gpt-5.3-codex-spark"
   }
 }
 ```
 
-Overrides take precedence over the profile. Valid values: `opus`, `sonnet`, `haiku`.
+Overrides take precedence over the profile. Values should be full OpenCode model IDs.
 
 ## Switching Profiles
 
@@ -77,17 +78,11 @@ Per-project default: Set in `.planning/config.json`:
 
 ## Design Rationale
 
-**Why Opus for gsd-planner?**
-Planning involves architecture decisions, goal decomposition, and task design. This is where model quality has the highest impact.
+**Why `openai/gpt-5.4` for quality?**
+When you want maximum reasoning quality, use the strongest configured OpenAI model across the full workflow.
 
-**Why Sonnet for gsd-executor?**
-Executors follow explicit PLAN.md instructions. The plan already contains the reasoning; execution is implementation.
+**Why `openai/gpt-5.3-codex-spark` for balanced and budget?**
+Execution-heavy GSD work benefits from a fast code-focused model. In this fork, balanced and budget intentionally share the same OpenAI model because the team prefers consistency over tier mixing.
 
-**Why Sonnet (not Haiku) for verifiers in balanced?**
-Verification requires goal-backward reasoning - checking if code *delivers* what the phase promised, not just pattern matching. Sonnet handles this well; Haiku may miss subtle gaps.
-
-**Why Haiku for gsd-codebase-mapper?**
-read-only exploration and pattern extraction. No reasoning required, just structured output from file contents.
-
-**Why `inherit` instead of passing `opus` directly?**
-OpenCode's `"opus"` alias maps to a specific model version. Organizations may block older opus versions while allowing newer ones. GSD returns `"inherit"` for opus-tier agents, causing them to use whatever opus version the user has configured in their session. This avoids version conflicts and silent fallbacks to Sonnet.
+**Why use explicit model IDs instead of aliases?**
+This fork is OpenAI-only by default. Explicit model IDs make installer output, profile resolution, and reviewer behavior predictable across machines.

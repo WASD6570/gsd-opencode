@@ -173,7 +173,7 @@ Run /gsd-set-profile or /gsd-set-profile <simple|smart|genius> to fix gsd-openco
 <notes>
 - This workflow is strictly diagnostic — never modify `opencode.json`, `.planning/oc_config.json`, or any other file.
 - When errors are found, always recommend `/gsd-set-profile` or `/gsd-set-profile <simple|smart|genius>` as the resolution path. Do not suggest manual editing.
-- Always display full model IDs (e.g., `bailian-coding-plan/qwen3-coder-plus`), never abbreviate.
+- Always display full model IDs (e.g., `openai/gpt-5.4`), never abbreviate.
 - Missing `opencode.json` is a WARNING, not an error. The user simply hasn't customized agent models — agents fall back to the default/current model. Do not include it in the "Fix" section.
 - Missing `.planning/oc_config.json` IS an error — it means no gsd-opencode profile has been set up.
 - Always use the term "gsd-opencode profile" (not just "profile") when referring to the profile system.

@@ -57,9 +57,9 @@ Agents will now use:
 Example:
 | Agent | Model |
 |-------|-------|
-| gsd-planner | opus |
-| gsd-executor | sonnet |
-| gsd-verifier | haiku |
+| gsd-planner | openai/gpt-5.4 |
+| gsd-executor | openai/gpt-5.3-codex-spark |
+| gsd-verifier | openai/gpt-5.3-codex-spark |
 | ... | ... |
 
 Next spawned agents will use the new profile.

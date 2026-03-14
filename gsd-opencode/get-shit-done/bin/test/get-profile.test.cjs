@@ -24,19 +24,19 @@ const VALID_CONFIG_WITH_CURRENT = {
   profiles: {
     presets: {
       simple: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       smart: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       genius: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       }
     }
   }
@@ -46,9 +46,9 @@ const VALID_CONFIG_WITHOUT_CURRENT = {
   profiles: {
     presets: {
       simple: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       }
     }
   }
@@ -59,7 +59,7 @@ const VALID_CONFIG_INCOMPLETE_PROFILE = {
   profiles: {
     presets: {
       broken: {
-        planning: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark'
         // missing execution and verification
       }
     }
@@ -171,9 +171,9 @@ describe('get-profile.cjs', () => {
         profiles: {
           presets: {
             smart: {
-              planning: 'bailian-coding-plan/qwen3.5-plus',
-              execution: 'bailian-coding-plan/qwen3.5-plus',
-              verification: 'bailian-coding-plan/qwen3.5-plus'
+              planning: 'openai/gpt-5.3-codex-spark',
+              execution: 'openai/gpt-5.3-codex-spark',
+              verification: 'openai/gpt-5.3-codex-spark'
             }
           }
         }

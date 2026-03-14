@@ -176,7 +176,7 @@ Note: GSD config read permission has been configured to allow access to `~/.conf
 
 <notes>
 - Use the question tool for ALL user input — never prompt via text.
-- Always display full model IDs (e.g., `bailian-coding-plan/qwen3-coder-plus`), never abbreviate.
+- Always display full model IDs (e.g., `openai/gpt-5.4`), never abbreviate.
 - All file reads/writes go through `gsd-oc-tools.cjs` — do not manually edit JSON files.
 - Backups are created automatically by the CLI when writing changes.
 - `.planning/oc_config.json` is the source of truth; `opencode.json` is always derived from it.

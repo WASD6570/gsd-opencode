@@ -21,19 +21,19 @@ const VALID_CONFIG = {
   profiles: {
     presets: {
       simple: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       smart: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       genius: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       }
     }
   }
@@ -120,11 +120,11 @@ describe('pivot-profile.cjs', () => {
         $schema: 'https://opencode.ai/schema.json',
         agent: {
           'gsd-planner': {
-            model: 'bailian-coding-plan/qwen3.5-plus',
+            model: 'openai/gpt-5.3-codex-spark',
             tools: ['*']
           },
           'gsd-executor': {
-            model: 'bailian-coding-plan/qwen3.5-plus',
+            model: 'openai/gpt-5.3-codex-spark',
             tools: ['*']
           }
         }
@@ -247,7 +247,7 @@ describe('pivot-profile.cjs', () => {
 
     it('pivotProfile handles inline profile creation (Mode 3)', () => {
       const pivotProfile = importPivotProfile();
-      const profileDef = 'test:{"planning":"bailian-coding-plan/qwen3.5-plus","execution":"bailian-coding-plan/qwen3.5-plus","verification":"bailian-coding-plan/qwen3.5-plus"}';
+      const profileDef = 'test:{"planning":"openai/gpt-5.3-codex-spark","execution":"openai/gpt-5.3-codex-spark","verification":"openai/gpt-5.3-codex-spark"}';
       
       try {
         pivotProfile(testDir, [profileDef]);

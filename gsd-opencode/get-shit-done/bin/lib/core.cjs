@@ -16,18 +16,23 @@ function toPosixPath(p) {
 // ─── Model Profile Table ─────────────────────────────────────────────────────
 
 const MODEL_PROFILES = {
-  'gsd-planner':              { quality: 'opus', balanced: 'opus',   budget: 'sonnet' },
-  'gsd-roadmapper':           { quality: 'opus', balanced: 'sonnet', budget: 'sonnet' },
-  'gsd-executor':             { quality: 'opus', balanced: 'sonnet', budget: 'sonnet' },
-  'gsd-phase-researcher':     { quality: 'opus', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-project-researcher':   { quality: 'opus', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-research-synthesizer': { quality: 'sonnet', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-debugger':             { quality: 'opus', balanced: 'sonnet', budget: 'sonnet' },
-  'gsd-codebase-mapper':      { quality: 'sonnet', balanced: 'haiku', budget: 'haiku' },
-  'gsd-verifier':             { quality: 'sonnet', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-plan-checker':         { quality: 'sonnet', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-integration-checker':  { quality: 'sonnet', balanced: 'sonnet', budget: 'haiku' },
-  'gsd-nyquist-auditor':      { quality: 'sonnet', balanced: 'sonnet', budget: 'haiku' },
+  'gsd-planner':              { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-roadmapper':           { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-executor':             { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-phase-researcher':     { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-project-researcher':   { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-research-synthesizer': { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-debugger':             { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-codebase-mapper':      { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-verifier':             { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-plan-checker':         { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-integration-checker':  { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-nyquist-auditor':      { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-code-reviewer':        { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-database-reviewer':    { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-go-reviewer':          { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-python-reviewer':      { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
+  'gsd-security-reviewer':    { quality: 'openai/gpt-5.4', balanced: 'openai/gpt-5.3-codex-spark', budget: 'openai/gpt-5.3-codex-spark' },
 };
 
 // ─── Output helpers ───────────────────────────────────────────────────────────
@@ -370,15 +375,14 @@ function resolveModelInternal(cwd, agentType) {
   // Check per-agent override first
   const override = config.model_overrides?.[agentType];
   if (override) {
-    return override === 'opus' ? 'inherit' : override;
+    return override;
   }
 
   // Fall back to profile lookup
   const profile = config.model_profile || 'balanced';
   const agentModels = MODEL_PROFILES[agentType];
-  if (!agentModels) return 'sonnet';
-  const resolved = agentModels[profile] || agentModels['balanced'] || 'sonnet';
-  return resolved === 'opus' ? 'inherit' : resolved;
+  if (!agentModels) return 'openai/gpt-5.3-codex-spark';
+  return agentModels[profile] || agentModels.balanced || 'openai/gpt-5.3-codex-spark';
 }
 
 // ─── Misc utilities ───────────────────────────────────────────────────────────

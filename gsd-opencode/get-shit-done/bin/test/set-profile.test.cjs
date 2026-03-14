@@ -25,19 +25,19 @@ const VALID_CONFIG = {
   profiles: {
     presets: {
       simple: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       smart: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       },
       genius: {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.3-codex-spark',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       }
     }
   }
@@ -124,11 +124,11 @@ describe('set-profile.cjs', () => {
         $schema: 'https://opencode.ai/schema.json',
         agent: {
           'gsd-planner': {
-            model: 'bailian-coding-plan/qwen3.5-plus',
+            model: 'openai/gpt-5.3-codex-spark',
             tools: ['*']
           },
           'gsd-executor': {
-            model: 'bailian-coding-plan/qwen3.5-plus',
+            model: 'openai/gpt-5.3-codex-spark',
             tools: ['*']
           }
         }
@@ -174,7 +174,7 @@ describe('set-profile.cjs', () => {
 
     it('setProfile validates required keys for inline profiles', () => {
       const setProfile = importSetProfile();
-      const inlineProfile = 'test_profile:{"planning":"bailian-coding-plan/qwen3.5-plus","execution":"bailian-coding-plan/qwen3.5-plus","verification":"bailian-coding-plan/qwen3.5-plus"}';
+      const inlineProfile = 'test_profile:{"planning":"openai/gpt-5.3-codex-spark","execution":"openai/gpt-5.3-codex-spark","verification":"openai/gpt-5.3-codex-spark"}';
       
       try {
         setProfile(testDir, [inlineProfile]);
@@ -234,7 +234,7 @@ describe('set-profile.cjs', () => {
     it('setProfile rejects incomplete profile definitions', () => {
       const setProfile = importSetProfile();
       // Missing verification property
-      const badDef = 'bad_profile:{"planning":"bailian-coding-plan/qwen3.5-plus","execution":"bailian-coding-plan/qwen3.5-plus"}';
+      const badDef = 'bad_profile:{"planning":"openai/gpt-5.3-codex-spark","execution":"openai/gpt-5.3-codex-spark"}';
       
       try {
         setProfile(testDir, [badDef]);

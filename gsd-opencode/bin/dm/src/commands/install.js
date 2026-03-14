@@ -26,6 +26,7 @@ import { ScopeManager } from "../services/scope-manager.js";
 import { ConfigManager } from "../services/config.js";
 import { FileOperations } from "../services/file-ops.js";
 import { ManifestManager } from "../services/manifest-manager.js";
+import { setupOpencodeDefaults } from "../services/opencode-setup.js";
 import { logger, setVerbose } from "../utils/logger.js";
 import {
   promptInstallScope,
@@ -567,14 +568,19 @@ export async function installCommand(options = {}) {
     await config.setVersion(version);
     logger.debug(`Created VERSION file with version: ${version}`);
 
-    // Step 8: Show success summary
+    // Step 8: Configure OpenCode defaults
+    const setupResult = await setupOpencodeDefaults(targetDir);
+    logger.debug(`OpenCode defaults ${setupResult.changed ? 'updated' : 'already configured'} at ${setupResult.opencodePath}`);
+
+    // Step 9: Show success summary
     logger.success("Installation complete!");
     logger.dim("");
     logger.dim("Summary:");
     logger.dim(`  Files copied: ${result.filesCopied}`);
-    logger.dim(`  Directories: ${result.directories}`);
-    logger.dim(`  Location: ${pathPrefix}`);
-    logger.dim(`  Version: ${version}`);
+      logger.dim(`  Directories: ${result.directories}`);
+      logger.dim(`  Location: ${pathPrefix}`);
+      logger.dim(`  Version: ${version}`);
+      logger.dim(`  OpenCode defaults: ${setupResult.changed ? 'updated' : 'already configured'}`);
 
     if (verbose) {
       logger.dim("");

@@ -23,11 +23,11 @@ import INVALID_CONFIG from './fixtures/oc-config-invalid.json' assert { type: 'j
 
 // Mock model catalog (simulates opencode models output)
 const MOCK_MODELS = [
-  'bailian-coding-plan/qwen3.5-plus',
-  'bailian-coding-plan/qwen3.5-pro',
-  'opencode/gpt-5-nano',
-  'kilo/anthropic/claude-3.7-sonnet',
-  'kilo/anthropic/claude-3.5-haiku'
+  'openai/gpt-5.4',
+  'openai/gpt-5.3-codex',
+  'openai/gpt-5.3-codex-spark',
+  'openai/gpt-5-codex',
+  'openai/codex-mini-latest'
 ];
 
 describe('oc-profile-config.cjs', () => {
@@ -283,9 +283,9 @@ describe('oc-profile-config.cjs', () => {
       fs.writeFileSync(configPath, JSON.stringify(initialConfig, null, 2), 'utf8');
 
       const inlineProfile = {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'bailian-coding-plan/qwen3.5-plus',
-        verification: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.4',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       };
 
       const result = applyProfileWithValidation(testDir, 'custom', {
@@ -306,7 +306,7 @@ describe('oc-profile-config.cjs', () => {
       fs.writeFileSync(configPath, JSON.stringify(VALID_CONFIG, null, 2), 'utf8');
 
       const incompleteProfile = {
-        planning: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.4'
         // Missing execution and verification
       };
 
@@ -325,9 +325,9 @@ describe('oc-profile-config.cjs', () => {
   describe('getAgentsForProfile', () => {
     it('returns all agents for complete profile', () => {
       const profile = {
-        planning: 'bailian-coding-plan/qwen3.5-plus',
-        execution: 'opencode/gpt-5-nano',
-        verification: 'kilo/anthropic/claude-3.7-sonnet'
+        planning: 'openai/gpt-5.4',
+        execution: 'openai/gpt-5.3-codex-spark',
+        verification: 'openai/gpt-5.3-codex-spark'
       };
 
       const agents = getAgentsForProfile(profile);
@@ -336,21 +336,21 @@ describe('oc-profile-config.cjs', () => {
       expect(agents.length).toBeGreaterThan(10); // Should have 11 agents
 
       // Check planning agents
-      const planningAgents = agents.filter(a => a.model === 'bailian-coding-plan/qwen3.5-plus');
+      const planningAgents = agents.filter(a => a.model === 'openai/gpt-5.4');
       expect(planningAgents.length).toBe(7);
 
       // Check execution agents
-      const executionAgents = agents.filter(a => a.model === 'opencode/gpt-5-nano');
+      const executionAgents = agents.filter(a => a.model === 'openai/gpt-5.3-codex-spark');
       expect(executionAgents.length).toBe(2);
 
       // Check verification agents
-      const verificationAgents = agents.filter(a => a.model === 'kilo/anthropic/claude-3.7-sonnet');
+      const verificationAgents = agents.filter(a => a.model === 'openai/gpt-5.3-codex-spark');
       expect(verificationAgents.length).toBe(2);
     });
 
     it('handles profile with missing categories', () => {
       const profile = {
-        planning: 'bailian-coding-plan/qwen3.5-plus'
+        planning: 'openai/gpt-5.4'
         // Missing execution and verification
       };
 
@@ -358,7 +358,7 @@ describe('oc-profile-config.cjs', () => {
 
       expect(agents).toBeInstanceOf(Array);
       expect(agents.length).toBe(7); // Only planning agents
-      expect(agents.every(a => a.model === 'bailian-coding-plan/qwen3.5-plus')).toBe(true);
+      expect(agents.every(a => a.model === 'openai/gpt-5.4')).toBe(true);
     });
   });
 

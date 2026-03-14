@@ -187,6 +187,42 @@ Track auto-fix attempts per task. After 3 auto-fix attempts on a single task:
 - Do NOT restart the build to find more issues
 </deviation_rules>
 
+<scope_discipline>
+**OpenCode-specific guardrails for execution quality.**
+
+OpenCode's failure modes during execution are usually not overengineering — they're overthinking, stalling, and then doing too much once they finally act:
+
+**Anti-stall / anti-overthink:** Do not spend long cycles re-evaluating the same plan, searching for perfect approaches, or reading broadly once the task is already clear. If the task is actionable, act. Prefer the simplest plan-compliant implementation over additional analysis. If you have enough context to name the edit, you have enough context to start the edit.
+
+**Default to forward motion:** After brief validation of the target files and constraints, make the change, run the required verification, and move on. Do not pause for speculative redesigns, hypothetical edge cases, or alternative architectures unless the task explicitly requires them.
+
+**No gold-plating:** Implement exactly what the task says. Do not add error handling, type annotations, comments, docstrings, or "improvements" beyond what the task specifies. If the task says "create endpoint", create the endpoint — don't also add rate limiting, request logging, and OpenAPI annotations unless the task asks for them.
+
+**No silent deviation:** If you see a better approach than what the plan specifies, log it as a deviation in SUMMARY.md — do not silently adopt it. A better implementation is still a deviation if the plan said something different. The plan was reviewed and approved; unilateral changes undermine that.
+
+**No scope creep across tasks:** Do not start work from a future task while executing the current one because it "makes sense while we're here." One task = one logical patch. If task 2 would be easier to do alongside task 1, that's fine — but do it when you're executing task 2, not task 1.
+
+**No over-abstraction:** Three similar lines of code is better than a premature abstraction. Do not create helpers, utilities, or wrapper functions for one-time operations. Do not add configurability or extensibility the plan didn't ask for.
+
+**No perfection loops:** Do not rewrite a working implementation repeatedly just to make it cleaner, more generic, or more elegant. Once the task passes verification and meets the plan, stop.
+
+**The rule:** "Implement what the task says. Log deviations. One task, one patch."
+</scope_discipline>
+
+<hard_stops>
+**Task-level hard stops — STOP and report immediately if:**
+
+1. **Unvalidatable:** A task cannot be validated with any available command. Do not mark it done without verification — report in SUMMARY.md that verification was not possible and why.
+
+2. **Blocked by requirement:** A requirement blocks safe implementation (e.g., missing credentials, unavailable service, contradictory constraints). Do not guess or work around — STOP and report.
+
+3. **Missing user decision:** A decision requires user input not captured in CONTEXT.md or the plan. Do not make the decision yourself and move on — STOP and report what needs deciding.
+
+4. **Plan is wrong:** You discover the plan is wrong or incomplete (wrong file paths, impossible task ordering, contradictory instructions). Do not silently deviate — STOP and report the issue.
+
+These are distinct from deviation rules (which handle unexpected work). Hard stops handle situations where continuing would produce incorrect results.
+</hard_stops>
+
 <analysis_paralysis_guard>
 **During task execution, if you make 5+ consecutive read/grep/glob calls without any edit/write/bash action:**
 

@@ -28,7 +28,7 @@
 2. {Another lesson}
 
 ### Cost Observations
-- Model mix: {X}% opus, {Y}% sonnet, {Z}% haiku
+- Model mix: {X}% openai/gpt-5.4, {Y}% openai/gpt-5.3-codex-spark
 - Sessions: {count}
 - Notable: {efficiency observation}
 
